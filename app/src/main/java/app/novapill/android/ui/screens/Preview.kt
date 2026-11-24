@@ -66,7 +66,7 @@ class PreviewModel(private val appContext: Context) : NoopIslandActions() {
     var card by mutableStateOf(CardKind.MEDIA)
     var playing by mutableStateOf(true)
     var lyricsOpen by mutableStateOf(false)
-    var volume by mutableFloatStateOf(0.6f)
+    var previewVolume by mutableFloatStateOf(0.6f)
     var timer by mutableStateOf(CountdownState())
     var stopwatch by mutableStateOf(StopwatchState())
     var flashOn by mutableStateOf(false)
@@ -161,7 +161,7 @@ class PreviewModel(private val appContext: Context) : NoopIslandActions() {
     }
 
     override fun setVolume(fraction: Float) {
-        volume = fraction.coerceIn(0f, 1f)
+        previewVolume = fraction.coerceIn(0f, 1f)
     }
 
     override fun startTimer(minutes: Int) {
@@ -274,7 +274,7 @@ class PreviewModel(private val appContext: Context) : NoopIslandActions() {
                 flashOn = flashOn,
                 flashProblem = TorchProblem.NONE,
                 battery = BatteryInfo(percent = 82, charging = false, known = true),
-                volume = VolumeLevel((volume * 15f).toInt(), 15),
+                volume = VolumeLevel((previewVolume * 15f).toInt(), 15),
                 weather = WeatherState.Idle,
                 use24h = use24h,
                 recordManualEnabled = settings.recordManualEnabled,
