@@ -29,11 +29,8 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      # Do not request the removed legacy SDK package "tools".
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: platform-tools platforms;android-36 build-tools;36.0.0
+        uses: android-actions/setup-android@v4
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
@@ -41,6 +38,7 @@ jobs:
       - name: Make the wrapper executable
         run: chmod +x ./gradlew
 
+      # The APK comes first so a failing unit test never hides a build that worked.
       - name: Build debug APK
         run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
 
@@ -58,7 +56,7 @@ jobs:
           {
             echo "### NOVA PILL debug APK"
             echo ""
-            echo "`$(basename "$APK")`, $(du -h "$APK" | cut -f1)"
+            echo "\`$(basename "$APK")\`, $(du -h "$APK" | cut -f1)"
             echo ""
             echo "Download it from the **Artifacts** section at the bottom of this run's page."
             echo "It is a debug build signed with the default debug key. There is no release keystore in this repository."
@@ -76,6 +74,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      # Informational: lint findings are uploaded for reading but do not fail the build.
       - name: Android Lint
         continue-on-error: true
         run: ./gradlew --no-daemon :app:lintDebug
